@@ -8,13 +8,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          node-version: 'lts/*'
-          cache: 'yarn'
-      - run: |
-          corepack enable
-      - run: yarn install --frozen-lockfile
-      - run: yarn test
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+      - name: Build
+        run: mvn -B -q -DskipTests package
+      - name: Test
+        run: mvn -B test
+      - name: Smoke-test the yup command
+        run: |
+          echo '{"op":"isValid","schema":["string",["min",2]],"value":"ab"}' | bin/yup | grep -qx '{"result":true}'

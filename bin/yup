@@ -1,0 +1,3 @@
+#!/bin/sh
+# The yup command: the Java port's JSON-lines front end (build it first with `mvn -q -DskipTests package`).
+exec java -Xss8m -jar "$(dirname "$(readlink -f "$0")")/../target/yup.jar" "$@"
